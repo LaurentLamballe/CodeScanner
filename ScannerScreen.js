@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Text, Button } from '@ui-kitten/components';
+import { Layout, Text, Button, Card } from '@ui-kitten/components';
 import { StyleSheet, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { useTabBarCode } from './hooks/useTabBarCode';
 
 function BarCodeList({ tabBarCode }) {
   return (
@@ -15,13 +16,12 @@ function BarCodeList({ tabBarCode }) {
   );
 }
 
-
-
-
 function ScannerScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  
+  const [tabBarCode, setTabBarCode] = useState([]);
+  const [message, setMessage] = useState('');
+
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -31,11 +31,9 @@ function ScannerScreen() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    Alert.alert(
-      `Bar code with type ${type} and data ${data} has been scanned!`
-    );
-    // setScannedBarCode(data);
-    // addBarCode() ; 
+    setMessage(`Bar code with type ${type} and data ${data} has been scanned!`);
+
+    setTabBarCode(useTabBarCode(data, tabBarCode));
   };
 
   if (hasPermission === null) {
@@ -52,16 +50,20 @@ function ScannerScreen() {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      <Text category="h1" appearance="hint">
-        CodeScanner
-      </Text>
 
-      <BarCodeList data={data} />
+      <Card style={{ marginBottom: 20 }}>
+        <Text category="h1" appearance="hint">
+          CodeScanner
+        </Text>
+        <Text category="p1" appearance="hint">
+          {message}
+        </Text>
+      </Card>
+
+      <BarCodeList data={tabBarCode} />
 
       {scanned && (
-        <Button onPress={() => setScanned(false)}>
-          {(evaProps) => <Text>Tap to Scan Again</Text>}
-        </Button>
+        <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button>
       )}
     </Layout>
   );
