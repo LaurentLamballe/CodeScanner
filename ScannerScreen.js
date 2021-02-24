@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Text, Button, Card } from '@ui-kitten/components';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useTabBarCode } from './hooks/useTabBarCode';
 
-function BarCodeList({ tabBarCode }) {
+function BarCodeList({ data }) {
   return (
     <>
-      {tabBarCode > 0 ? (
-        <Text appearance="hint">Liste</Text>
-      ) : (
-        <Text appearance="hint">Scannez un code-barre</Text>
-      )}
+      {data.map((item, index) => (
+        <View key={index}>
+          <Text>{item}</Text>
+        </View>
+      ))}
     </>
   );
 }
