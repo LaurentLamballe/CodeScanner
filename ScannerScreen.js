@@ -3,10 +3,10 @@ import { Layout, Text, Button } from '@ui-kitten/components';
 import { StyleSheet, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
-function BarCodeList({ data }) {
+function BarCodeList({ tabBarCode }) {
   return (
     <>
-      {data > 0 ? (
+      {tabBarCode > 0 ? (
         <Text appearance="hint">Liste</Text>
       ) : (
         <Text appearance="hint">Scannez un code-barre</Text>
@@ -15,11 +15,13 @@ function BarCodeList({ data }) {
   );
 }
 
+
+
+
 function ScannerScreen() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [data, setData] = useState([]);
-
+  
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -32,7 +34,8 @@ function ScannerScreen() {
     Alert.alert(
       `Bar code with type ${type} and data ${data} has been scanned!`
     );
-    setData(data, ...data);
+    // setScannedBarCode(data);
+    // addBarCode() ; 
   };
 
   if (hasPermission === null) {
