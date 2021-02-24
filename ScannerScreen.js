@@ -3,9 +3,22 @@ import { Layout, Text, Button } from '@ui-kitten/components';
 import { StyleSheet, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
+function BarCodeList({ data }) {
+  return (
+    <>
+      {data > 0 ? (
+        <Text appearance="hint">Liste</Text>
+      ) : (
+        <Text appearance="hint">Scannez un code-barre</Text>
+      )}
+    </>
+  );
+}
+
 function ScannerScreen() {
   const [hasPermission, setHasPermission] = useState(null);
-  const [scanned, setScanned] = useState(true);
+  const [scanned, setScanned] = useState(false);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -19,6 +32,7 @@ function ScannerScreen() {
     Alert.alert(
       `Bar code with type ${type} and data ${data} has been scanned!`
     );
+    setData(data, ...data);
   };
 
   if (hasPermission === null) {
@@ -35,7 +49,11 @@ function ScannerScreen() {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      <Text category="h1">CodeScanner</Text>
+      <Text category="h1" appearance="hint">
+        CodeScanner
+      </Text>
+
+      <BarCodeList data={data} />
 
       {scanned && (
         <Button onPress={() => setScanned(false)}>
